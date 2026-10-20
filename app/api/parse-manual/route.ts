@@ -103,7 +103,6 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: "gpt-5-mini",
-        model_region: "global",
         max_tokens: 6000,
         messages: [
           {
@@ -132,7 +131,13 @@ export async function POST(request: Request) {
   const result = await response.json();
   if (!response.ok) {
     return NextResponse.json(
-      { error: result.message ?? result.error ?? "Manual parsing failed." },
+      {
+        error:
+          result.metadata?.errors?.join("; ") ??
+          result.message ??
+          result.error ??
+          "Manual parsing failed."
+      },
       { status: response.status }
     );
   }
