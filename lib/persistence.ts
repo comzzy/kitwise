@@ -1,6 +1,7 @@
 import type { BuildPlan, BuildState } from "./types";
 
-const KEY = "kitwise-build-state-v1";
+const PREFIX = "kitwise-build-state-v2:";
+const keyFor = (planId: string) => PREFIX + planId;
 
 export function initialState(plan: BuildPlan): BuildState {
   return {
@@ -16,10 +17,10 @@ export function initialState(plan: BuildPlan): BuildState {
   };
 }
 
-export function loadState(): BuildState | null {
+export function loadState(planId: string): BuildState | null {
   if (typeof window === "undefined") return null;
   try {
-    const value = localStorage.getItem(KEY);
+    const value = localStorage.getItem(keyFor(planId));
     return value ? (JSON.parse(value) as BuildState) : null;
   } catch {
     return null;
@@ -27,9 +28,9 @@ export function loadState(): BuildState | null {
 }
 
 export function saveState(state: BuildState) {
-  localStorage.setItem(KEY, JSON.stringify(state));
+  localStorage.setItem(keyFor(state.plan.id), JSON.stringify(state));
 }
 
-export function clearState() {
-  localStorage.removeItem(KEY);
+export function clearState(planId: string) {
+  localStorage.removeItem(keyFor(planId));
 }

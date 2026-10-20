@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, Image, LoaderCircle, Sparkles, Upload } from "lucide-react";
+import { ChevronDown, Image, LoaderCircle, Sparkles, Upload } from "lucide-react";
+import { KitPicker } from "./KitPicker";
 import type { BuildPlan } from "@/lib/types";
-import { demoPlan } from "@/lib/demo-plan";
 
 async function extractPdfText(file: File) {
   const pdfjs = await import("pdfjs-dist");
@@ -38,6 +38,7 @@ export function ManualSetup({
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [showUpload, setShowUpload] = useState(false);
 
   async function parse() {
     if (!file && notes.trim().length < 20) {
@@ -74,7 +75,7 @@ export function ManualSetup({
       onPlan(result);
     } catch (cause) {
       setError(
-        cause instanceof Error ? cause.message : "Could not parse this manual."
+        "We couldn't turn this manual into a plan. Pick a ready-made kit above and you can start building right away."
       );
     } finally {
       setBusy(false);
@@ -85,46 +86,51 @@ export function ManualSetup({
     <section className="setup-card">
       <div className="setup-copy">
         <span className="eyebrow">Set up your build</span>
-        <h1>Turn the manual into a clear plan.</h1>
-        <p>
-          Use a text-based PDF, or paste the parts and instructions. Review
-          uncertain details before you start.
-        </p>
+        <h1>Pick your kit.</h1>
+        <p>Every kit has the parts list, tools, steps and safety checks ready. Choose one and start talking.</p>
       </div>
 
-      <label className="drop-zone">
-        <input
-          type="file"
-          accept="application/pdf,image/*"
-          onChange={(event) => setFile(event.target.files?.[0] ?? null)}
-        />
-        <span className="drop-icon">
-          {file?.type.startsWith("image/") ? <Image /> : <Upload />}
-        </span>
-        <strong>{file ? file.name : "Choose a PDF or photo"}</strong>
-        <small>PDF text is extracted locally. Images need notes below.</small>
-      </label>
+      <KitPicker onPlan={onPlan} />
 
-      <label className="notes-label">
-        Manual text or diagram notes
-        <textarea
-          value={notes}
-          onChange={(event) => setNotes(event.target.value)}
-          placeholder="Example: Parts: 1 tabletop, 4 legs, 8 M6 bolts. Step 1: attach each leg with two bolts. Do not fully tighten until the frame is square."
-        />
-      </label>
-
-      {error && <p className="error-note">{error}</p>}
-
-      <div className="setup-actions">
-        <button className="primary-button" onClick={parse} disabled={busy}>
-          {busy ? <LoaderCircle className="spin" /> : <Sparkles />}
-          {busy ? "Building the plan" : "Create build plan"}
+      <div className={`upload-panel ${showUpload ? "is-open" : ""}`}>
+        <button className="upload-toggle" onClick={() => setShowUpload((v) => !v)} aria-expanded={showUpload}>
+          <span>Have a different manual? Upload it instead</span>
+          <ChevronDown />
         </button>
-        <button className="ghost-button" onClick={() => onPlan(demoPlan)}>
-          <FileText />
-          Use the demo table
-        </button>
+        {showUpload && (
+          <div className="upload-body">
+            <label className="drop-zone">
+              <input
+                type="file"
+                accept="application/pdf,image/*"
+                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              />
+              <span className="drop-icon">
+                {file?.type.startsWith("image/") ? <Image /> : <Upload />}
+              </span>
+              <strong>{file ? file.name : "Choose a PDF or photo"}</strong>
+              <small>PDF text is extracted locally. Images need notes below.</small>
+            </label>
+
+            <label className="notes-label">
+              Manual text or diagram notes
+              <textarea
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                placeholder="Example: Parts: 1 tabletop, 4 legs, 8 M6 bolts. Step 1: attach each leg with two bolts. Do not fully tighten until the frame is square."
+              />
+            </label>
+
+            {error && <p className="error-note">{error}</p>}
+
+            <div className="setup-actions">
+              <button className="primary-button" onClick={parse} disabled={busy}>
+                {busy ? <LoaderCircle className="spin" /> : <Sparkles />}
+                {busy ? "Reading the manual" : "Create build plan"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

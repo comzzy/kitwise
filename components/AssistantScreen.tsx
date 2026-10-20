@@ -38,7 +38,7 @@ export function AssistantScreen({
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const saved = loadState();
+    const saved = loadState(initialPlan.id);
     if (saved?.plan.id === initialPlan.id) setBuild(saved);
     setHydrated(true);
   }, [initialPlan.id]);
@@ -111,7 +111,7 @@ export function AssistantScreen({
 
   function restart() {
     agent.disconnect();
-    clearState();
+    clearState(build.plan.id);
     onExit();
   }
 
