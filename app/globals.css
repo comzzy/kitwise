@@ -1376,3 +1376,6 @@ select {
   .kit-art svg { width: 64px; height: 64px; }
   .kit-body strong { font-size: 21px; }
 }
+
+.footer-links { display: flex; gap: 24px; font-weight: 800; }
+.footer-links a:hover { color: var(--purple-dark); }

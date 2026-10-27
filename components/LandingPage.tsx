@@ -53,6 +53,7 @@ export function LandingPage({
         <div className="nav-links">
           <a href="#how">How it works</a>
           <a href="#features">Features</a>
+          <a href="/docs">Docs</a>
         </div>
         <a className="nav-cta" href="#start">
           Start a build <ArrowRight />
@@ -161,6 +162,9 @@ export function LandingPage({
           <span className="brand-mark">K</span>
           Kitwise
         </a>
+        <div className="footer-links">
+          <a href="/docs">Docs</a>
+        </div>
         <p>Clear instructions. Fewer wrong turns.</p>
       </footer>
     </main>
