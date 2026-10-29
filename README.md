@@ -59,6 +59,6 @@ Open http://localhost:3000.
 
 ## Demo video
 
-Watch: https://cdn.jsdelivr.net/gh/comzzy/kitwise@master/demo/kitwise-demo.mp4
+Watch: https://cdn.jsdelivr.net/gh/comzzy/kitwise@master/demo/kitwise-demo-v2.mp4
 
-Music: "Carefree" by Kevin MacLeod (incompetech.com), CC BY 4.0. Narration voice: Paul (AssemblyAI).
+Music: "Carefree" by Kevin MacLeod (incompetech.com), CC BY 4.0. Narration voice: Ivy (AssemblyAI).
