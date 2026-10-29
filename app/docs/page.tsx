@@ -191,6 +191,12 @@ export default function DocsPage() {
                 walkie-talkie.
               </p>
               <p>
+                The "Read this step aloud" button uses AssemblyAI's TTS-1
+                speech model. It reads the current step and its tool tip in
+                the voice you choose (Audrey, Titus, Buford or Lilla), without
+                opening a live voice session.
+              </p>
+              <p>
                 The secret API key stays on the Kitwise server. Your browser
                 only receives a short-lived token, valid for 60 seconds, to open
                 the voice session.

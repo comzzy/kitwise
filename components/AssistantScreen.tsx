@@ -22,6 +22,8 @@ import {
 } from "@/lib/persistence";
 import { VOICES } from "@/lib/types";
 import { useVoiceAgent } from "@/hooks/useVoiceAgent";
+import { useStepSpeech } from "@/hooks/useStepSpeech";
+import { DEFAULT_TTS_VOICE, TTS_VOICES, type TtsVoiceId } from "@/lib/tts-voices";
 import { Waveform } from "./Waveform";
 import { BuildReport } from "./BuildReport";
 
@@ -35,6 +37,8 @@ export function AssistantScreen({
   const [build, setBuild] = useState<BuildState>(() => initialState(initialPlan));
   const [voice, setVoice] = useState<VoiceChoice["id"]>("alba");
   const [pace, setPace] = useState<"relaxed" | "brisk">("relaxed");
+  const [ttsVoice, setTtsVoice] = useState<TtsVoiceId>(DEFAULT_TTS_VOICE);
+  const speech = useStepSpeech();
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -53,6 +57,11 @@ export function AssistantScreen({
     },
     []
   );
+
+  const { stop: stopSpeech } = speech;
+  useEffect(() => {
+    stopSpeech();
+  }, [build.currentStep, stopSpeech]);
 
   const agent = useVoiceAgent({
     build,
@@ -164,6 +173,42 @@ export function AssistantScreen({
                 <p>{current.toolTip}</p>
               </div>
             </div>
+
+            <div className="read-aloud">
+              <button
+                className="read-button"
+                disabled={agent.connected || speech.state === "loading"}
+                onClick={() =>
+                  speech.state === "playing"
+                    ? speech.stop()
+                    : speech.speak(
+                        `Step ${build.currentStep + 1}. ${current.title}. ${current.instruction} Tip: ${current.toolTip}`,
+                        ttsVoice
+                      )
+                }
+              >
+                {speech.state === "playing" ? <CircleStop /> : <Volume2 />}
+                {speech.state === "loading"
+                  ? "Preparing audio…"
+                  : speech.state === "playing"
+                    ? "Stop reading"
+                    : "Read this step aloud"}
+              </button>
+              <label>
+                Reader
+                <select
+                  value={ttsVoice}
+                  onChange={(event) => setTtsVoice(event.target.value as TtsVoiceId)}
+                >
+                  {TTS_VOICES.map((choice) => (
+                    <option value={choice.id} key={choice.id}>
+                      {choice.label} · {choice.note}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            {speech.error && <p className="error-note">{speech.error}</p>}
 
             {current.hazard !== "none" && (
               <div className="hazard-card">

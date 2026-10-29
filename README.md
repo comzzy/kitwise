@@ -27,11 +27,12 @@ Kitwise reads each step aloud and listens while you work. Ask "which screw?", "s
 - Two-person mode that splits the work between Person A and Person B
 - Voices (Alba, Paul, Vera, Ivy) and pace (relaxed or brisk)
 - Progress for each kit saved in your browser
+- Read any step aloud with AssemblyAI TTS-1 (voices Audrey, Titus, Buford, Lilla)
 - Live transcript of the conversation
 
 ## Tech stack
 
-Next.js 15, React, TypeScript, deployed on Vercel. Voice runs on AssemblyAI's Voice Agent API: speech recognition and speech output over one WebSocket. The browser gets a short-lived token from `/api/voice-token`, so the API key never leaves the server.
+Next.js 15, React, TypeScript, deployed on Vercel. Voice runs on AssemblyAI's Voice Agent API: speech recognition and speech output over one WebSocket. The browser gets a short-lived token from `/api/voice-token`, so the API key never leaves the server. The "Read this step aloud" button calls `/api/tts`, which sends the step text to AssemblyAI TTS-1 (`assemblyai-tts-1`, default voice `aai-audrey`) and returns a WAV file.
 
 ## Run it locally
 
