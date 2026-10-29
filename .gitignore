@@ -11,3 +11,4 @@ build/
 *.tsbuildinfo
 .vercel
 .env*
+HANDOFF.md
